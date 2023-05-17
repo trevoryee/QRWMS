@@ -13,7 +13,7 @@
     <body>
         
         <div id= "input">
-            <form action="insert_sql.php">
+            <form method="post" action="insert_sql.php">
                 Database: <input type="text" id="database" name="database"><br><br>
                 Make: <input type="text" id='make' name='make'><br><br>
                 Model: <input type="text" id='make' name='model'><br><br>
