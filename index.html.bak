@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="QR Inventory Management System">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="yeet@uwm.edu">
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <div id="input">
+      <form id="entryForm">
+        Database:
+        <select id="database" name="database">
+        <!-- Default option -->
+        <option value="" selected disabled>Select Database</option>
+        </select>
+        <br><br>
+        Make: <input type="text" id="make" name="make"><br><br>
+        Model: <input type="text" id="model" name="model"><br><br>
+        SN: <input type="text" id="sn" name="sn"><br><br>
+        <input type="submit" value="Submit"><br><br>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById('entryForm');
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const database = document.getElementById('database').value;
+        const make = document.getElementById('make').value;
+        const model = document.getElementById('model').value;
+        const sn = document.getElementById('sn').value;
+        
+        if (!make || !model || !sn) {
+            console.log('WARNING: Missing entry data.');
+            return;
+        }
+
+        const data = {
+          database: database,
+          make: make,
+          model: model,
+          sn: sn
+        };
+
+        fetch('/add-entry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => response.text())
+          .then(result => {
+            console.log(result);
+            // Handle the response as needed
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            // Handle the error as needed
+          });
+      });
+    </script>
+  </body>
+</html>
