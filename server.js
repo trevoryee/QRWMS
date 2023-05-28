@@ -1,9 +1,12 @@
 const express = require('express');
 const mysql = require('mysql');
 const app = express();
+const Jimp = require('jimp');
 const port = 3000;
 
 app.use(express.json()); // Enable JSON body parsing middleware
+
+//mysql stuff
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -49,3 +52,33 @@ app.post('/add-entry', (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+// Convert hexadecimal string to JPG image
+const hexToJpg = (hexString, outputPath) => {
+  const hexBuffer = Buffer.from(hexString, 'hex');
+  return Jimp.read(hexBuffer, (err, image) => {
+    if (err) throw err;
+    image.write(outputPath);
+  });
+};
+
+// Convert JPG image to hexadecimal string
+const jpgToHex = (imagePath) => {
+  return Jimp.read(imagePath)
+    .then(image => {
+      const buffer = image.getBufferAsync(Jimp.MIME_JPEG);
+      return buffer.toString('hex');
+    })
+    .catch(err => {
+      throw err;
+    });
+};
+
+// Usage examples
+hexToJpg('FFD8FFE000104A464946000101...', 'output.jpg')
+  .then(() => console.log('Hex to JPG conversion completed'))
+  .catch(err => console.error('Error converting hex to JPG:', err));
+
+jpgToHex('input.jpg')
+  .then(hexString => console.log('JPG to hex conversion completed:', hexString))
+  .catch(err => console.error('Error converting JPG to hex:', err));
